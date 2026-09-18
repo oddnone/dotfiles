@@ -1,0 +1,5 @@
+brew "fish"
+brew "go"
+brew "jq"
+brew "lazygit"
+brew "neovim"
