@@ -365,6 +365,12 @@ do
   -- Render markdown (headings, code blocks, tables, checkboxes, ...) inside the buffer
   vim.pack.add { gh 'MeanderingProgrammer/render-markdown.nvim' }
   require('render-markdown').setup {}
+
+  -- Jira board (:Jira). Credentials come from the shell env, not this file:
+  --   JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN (basic auth: email + API token)
+  -- Don't run `:Jira auth login`: its saved file takes priority over the env vars.
+  vim.pack.add { { src = gh 'letieu/jira.nvim', version = 'v0.8.10' } }
+  require('jira').setup { jira = { type = 'basic' } }
   -- Because lua is a real programming language, you can also have some logic to your installation -
   -- like only installing a plugin if a condition is met.
   --

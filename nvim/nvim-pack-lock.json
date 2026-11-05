@@ -30,6 +30,11 @@
       "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
       "src": "https://github.com/NMAC427/guess-indent.nvim"
     },
+    "jira.nvim": {
+      "rev": "a72783d53a1bc3e496ebc4ea2d8ff318fe9966f9",
+      "src": "https://github.com/letieu/jira.nvim",
+      "version": "'v0.8.10'"
+    },
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
       "src": "https://github.com/kdheepak/lazygit.nvim"
