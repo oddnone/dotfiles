@@ -361,6 +361,10 @@ do
 
   vim.pack.add { gh 'kdheepak/lazygit.nvim' }
   vim.keymap.set('n', '<leader>g', '<cmd>LazyGit<CR>')
+
+  -- Render markdown (headings, code blocks, tables, checkboxes, ...) inside the buffer
+  vim.pack.add { gh 'MeanderingProgrammer/render-markdown.nvim' }
+  require('render-markdown').setup {}
   -- Because lua is a real programming language, you can also have some logic to your installation -
   -- like only installing a plugin if a condition is met.
   --
