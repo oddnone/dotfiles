@@ -205,6 +205,21 @@ do
 
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+  -- Copy the current file's path to the system clipboard
+  local function copy_path(modifier, label)
+    return function()
+      local path = vim.fn.expand(modifier)
+      if path == '' then
+        vim.notify('No file in current buffer', vim.log.levels.WARN)
+        return
+      end
+      vim.fn.setreg('+', path)
+      vim.notify('Copied ' .. label .. ' path: ' .. path)
+    end
+  end
+  vim.keymap.set('n', '<leader>yr', copy_path('%:.', 'relative'), { desc = '[Y]ank [R]elative file path' })
+  vim.keymap.set('n', '<leader>ya', copy_path('%:p', 'absolute'), { desc = '[Y]ank [A]bsolute file path' })
+
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
   -- is not what someone will guess without a bit more experience.
@@ -499,11 +514,17 @@ do
     --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
     --   },
     -- },
-    -- pickers = {
-    --  find_files = {
-    --    hidden = true
-    --  },
-    -- },
+    defaults = {
+      -- Hide anything inside a .git directory (applies to every picker)
+      file_ignore_patterns = { '^%.git/', '/%.git/' },
+    },
+    pickers = {
+      -- Include dotfiles / dot-folders (.github, .config, ...) in file search
+      find_files = { hidden = true },
+      -- Same for live grep; also skip .git at the ripgrep level
+      live_grep = { additional_args = { '--hidden', '--glob', '!**/.git/*' } },
+      grep_string = { additional_args = { '--hidden', '--glob', '!**/.git/*' } },
+    },
     extensions = {
       ['ui-select'] = { require('telescope.themes').get_dropdown() },
     },
@@ -736,6 +757,9 @@ do
 
     stylua = {}, -- Used to format Lua code
 
+    -- ESLint LSP: lint diagnostics + auto-fix for JS/TS (uses the project's eslint config)
+    eslint = {},
+
     -- Special Lua Config, as recommended by neovim help docs
     lua_ls = {
       on_init = function(client)
@@ -799,6 +823,17 @@ do
     vim.lsp.config(name, server)
     vim.lsp.enable(name)
   end
+
+  -- Fix all auto-fixable lint problems in the current buffer.
+  -- Uses ESLint's fix-all when the eslint LSP is attached, otherwise asks any
+  -- attached LSP for its "source.fixAll" code action.
+  vim.keymap.set('n', '<leader>cf', function()
+    if vim.fn.exists ':LspEslintFixAll' == 2 then
+      vim.cmd 'LspEslintFixAll'
+    else
+      vim.lsp.buf.code_action { context = { only = { 'source.fixAll' }, diagnostics = {} }, apply = true }
+    end
+  end, { desc = '[C]ode: [F]ix all auto-fixable lint problems' })
 end
 
 -- ============================================================

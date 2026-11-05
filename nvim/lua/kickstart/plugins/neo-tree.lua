@@ -17,6 +17,12 @@ vim.keymap.set('n', '\\', '<Cmd>Neotree reveal<CR>', { desc = 'NeoTree reveal', 
 
 require('neo-tree').setup {
   filesystem = {
+    -- Expand the tree to the current buffer's file whenever you switch buffers
+    -- (e.g. after opening a file from Telescope)
+    follow_current_file = {
+      enabled = true,
+      leave_dirs_open = false, -- collapse dirs that were auto-expanded once you move away
+    },
     window = {
       mappings = {
         ['\\'] = 'close_window',
